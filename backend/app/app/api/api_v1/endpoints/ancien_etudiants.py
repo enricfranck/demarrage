@@ -1,6 +1,7 @@
 from os import SEEK_HOLE
 from typing import Any, List
 import uuid
+from sqlalchemy.dialects.postgresql.base import UUID
 
 from sqlalchemy.sql import schema
 
@@ -76,6 +77,48 @@ def read_etudiant_by_num_carte(
     etudiant = crud.ancien_etudiant.get_by_num_carte(schema=schema, num_carte=num_carte)
     if not etudiant:
         raise HTTPException(status_code=404, detail="Etudiant not found")
+    return etudiant
+
+
+@router.get("/by_mention/{schema}", response_model=List[Any])
+def read_etudiant_by_mention(
+    *,
+    schema: str,
+    uuid_mention: str,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get etudiant by mention.
+    """
+    etudiant = crud.ancien_etudiant.get_by_mention(schema=schema, uuid_mention=uuid_mention)
+    return etudiant
+
+@router.get("/by_parcours/{schema}", response_model=List[Any])
+def read_etudiant_by_parcours(
+    *,
+    schema: str,
+    uuid_parcours: str,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get etudiant by parcours.
+    """
+    etudiant = crud.ancien_etudiant.get_by_parcours(schema=schema, uuid_parcours=uuid_parcours )
+    return etudiant
+
+@router.get("/by_semetre_grand/{schema}", response_model=List[Any])
+def read_etudiant_by_semstre_and_mention(
+    *,
+    schema: str,
+    uuid_mention: UUID,
+    semetre_grand: str,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get etudiant by parcours.
+    """
+    etudiant = crud.ancien_etudiant.get_by_semetre_and_mention(
+        schema=schema, uuid_mention=uuid_mention,  semetre_grand=semetre_grand )
     return etudiant
 
 

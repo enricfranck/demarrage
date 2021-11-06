@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class Item(Base):
-    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String, index=True)
     description = Column(String, index=True)
     

@@ -7,24 +7,23 @@ from pydantic import BaseModel
 # Shared properties
 class ParcoursBase(BaseModel):
     title: Optional[str] = None
-    uuid_mention: Optional[str] = None
+    uuid_mention: Optional[UUID] = None
 
 
 # Properties to receive via API on creation
 class ParcoursCreate(ParcoursBase):
     title: str
-    uuid_mention: str
+    uuid_mention: UUID
 
 
 # Properties to receive via API on update
 class ParcoursUpdate(ParcoursBase):
     title: Optional[str] = None
-    uuid_mention: Optional[UUID] = None
+    uuid_mention: Optional[UUID]
 
 
 class ParcoursInDBBase(ParcoursBase):
     uuid: Optional[UUID]
-
     class Config:
         orm_mode = True
 

@@ -74,6 +74,33 @@ def read_etudiant_by_num_carte(
         raise HTTPException(status_code=404, detail="Etudiant not found")
     return etudiant
 
+@router.get("/by_mention/{schema}", response_model=List[Any])
+def read_etudiant_by_mention(
+    *,
+    schema: str,
+    uuid_mention: str,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get etudiant by mention.
+    """
+    etudiant = crud.nouveau_etudiant.get_by_mention(schema=schema, uuid_mention=uuid_mention)
+    
+    return etudiant
+
+@router.get("/by_parcours/{schema}", response_model=List[Any])
+def read_etudiant_by_mention(
+    *,
+    schema: str,
+    uuid_parcours: str,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get etudiant by parcours.
+    """
+    etudiant = crud.nouveau_etudiant.get_by_parcours(schema=schema, uuid_parcours=uuid_parcours)
+    return etudiant
+
 
 @router.delete("/{num_insc}", response_model=List[Any])
 def delete_etudiant_nouveau(

@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -12,6 +13,12 @@ class CRUDParcours(CRUDBase[Parcours, ParcoursCreate, ParcoursUpdate]):
 
     def get_by_uuid(self, db: Session, *, uuid: str) -> Optional[Parcours]:
         return db.query(Parcours).filter(Parcours.uuid == uuid).first()
+
+    def get_by_mention(self, db: Session, *, uuid_mention: UUID) -> Optional[List[Parcours]]:
+        return (
+            db.query(Parcours)
+            .filter(Parcours.uuid_mention == uuid_mention)
+            .all())
         
     def create(
         self, db: Session, *, obj_in: ParcoursCreate

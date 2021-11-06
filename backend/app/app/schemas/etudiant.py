@@ -49,8 +49,8 @@ class EtudiantAncienCreate(EtudiantBase):
     date_quitance: str
     uuid_mention: UUID
     uuid_parcours: UUID
-    uuid_semestre_petit: str
-    uuid_semestre_grand: str
+    semestre_petit: str
+    semestre_grand: str
 
 
 class EtudiantNouveauCreate(EtudiantBase):
@@ -88,8 +88,9 @@ class EtudiantNouveauCreate(EtudiantBase):
 class EtudiantAncienUpdate(EtudiantBase):
     moyenne: Optional[str] = None
     num_carte: Optional[str]
-    uuid_semestre_petit: Optional[str]
-    uuid_semestre_grand: Optional[str]
+    bacc:Optional[str]
+    semestre_petit: Optional[str]
+    semestre_grand: Optional[str]
 
 class EtudiantNouveauUpdate(EtudiantBase):
     num_insc: Optional[str]

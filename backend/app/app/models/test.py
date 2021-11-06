@@ -14,7 +14,7 @@ base = declarative_base()
 class Test(base):
     __tablename__ = "test"
     __table_args__ = {"schema":settings.SCHEMAS}
-    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String)
 
 def create_table():

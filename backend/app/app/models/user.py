@@ -13,8 +13,9 @@ if TYPE_CHECKING:
 
 
 class User(Base):
-    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
-    name = Column(String, index=True)
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    first_name = Column(String, index=True)
+    last_name = Column(String)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)

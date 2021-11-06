@@ -11,7 +11,7 @@ from app.db.session import engine
 def create(schemas):
         base =  MetaData()
         ancien_etudiant = Table("ancien_etudiant",base,
-            Column("uuid",UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
+            Column("uuid",UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
             Column("num_carte",String, unique=True),
             Column("nom",String),
             Column("prenom",String),
@@ -37,7 +37,7 @@ def create(schemas):
             schema=schemas
         )
         nouveau_etudiant = Table("nouveau_etudiant",base,
-            Column("uuid",UUID(as_uuid=True), primary_key=True, default=uuid.uuid4()),
+            Column("uuid",UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
             Column("num_insc",String, unique=True),
             Column("nom",String),
             Column("prenom",String),

@@ -11,6 +11,6 @@ if TYPE_CHECKING:
     from .semestre_valide import SemestreValide  # noqa: F401
 
 class AnneUniv(Base):
-    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String)
     code = Column(String)

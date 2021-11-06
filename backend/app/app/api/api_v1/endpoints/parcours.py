@@ -1,4 +1,5 @@
 from typing import Any, List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -43,8 +44,8 @@ def create_parcours(
     return parcours
 
 
-@router.put("/{id}", response_model=schemas.Parcours)
-def update_mention(
+@router.put("/{uuid}", response_model=schemas.Parcours)
+def update_parcours(
     *,
     db: Session = Depends(deps.get_db),
     uuid: str,
@@ -63,8 +64,8 @@ def update_mention(
     return parcours
 
 
-@router.get("/{uuid}", response_model=schemas.Parcours)
-def read_item(
+@router.get("/by_uuid/{uuid}", response_model=schemas.Parcours)
+def read_parcours_by_uuid(
     *,
     db: Session = Depends(deps.get_db),
     uuid: str,
@@ -81,8 +82,26 @@ def read_item(
     return parcours
 
 
+@router.get("/by_mention/{uuid_mention}", response_model=List[schemas.Parcours])
+def read_parcours_by_mention(
+    *,
+    db: Session = Depends(deps.get_db),
+    uuid_mention: UUID,
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get parcours by mention.
+    """
+    parcours = crud.parcours.get_by_mention(db=db, uuid_mention=uuid_mention)
+    if not parcours:
+        raise HTTPException(status_code=404, detail="Parcours not found")
+    if not crud.user.is_superuser(current_user):
+        raise HTTPException(status_code=400, detail="Not enough permissions")
+    return parcours
+
+
 @router.delete("/{uuid}", response_model=schemas.Parcours)
-def delete_mention(
+def delete_parcours(
     *,
     db: Session = Depends(deps.get_db),
     uuid: str,

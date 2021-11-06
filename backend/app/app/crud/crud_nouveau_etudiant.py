@@ -42,6 +42,23 @@ class CRUDEtudiantNouveau(CRUDBase[EtudiantNouveau, EtudiantNouveauCreate, Etudi
            row = con.execute(select, {"num_insc":num_insc}).fetchone()
            return row
 
+    def get_by_mention(self, schema: str, uuid_mention: str) -> Optional[EtudiantNouveau]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."nouveau_etudiant" WHERE uuid_mention= :uuid_mention
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"uuid_mention":uuid_mention}).fetchall()
+           return row
+
+    def get_by_parcours(self, schema: str, uuid_parcours: str) -> Optional[EtudiantNouveau]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."nouveau_etudiant" WHERE uuid_parcours= :uuid_parcours
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"uuid_parcours":uuid_parcours}).fetchall()
+           return row
+
+
     def create_etudiant(self,schema: str, obj_in: EtudiantNouveauCreate) -> Optional[EtudiantNouveau]:
         obj_in_data = jsonable_encoder(obj_in)
         insert = text(f"""

@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from sqlalchemy import text
+from uuid import UUID
 from sqlalchemy.inspection import inspect
 
 from fastapi.encoders import jsonable_encoder
@@ -22,8 +23,8 @@ class CRUDEtudiantAncien(CRUDBase[EtudiantAncien, EtudiantAncienCreate, Etudiant
                 num_cin=:num_cin,date_cin=:date_cin,lieu_cin=:lieu_cin,montant=:montant,
                 num_quitance=:num_quitance,date_quitance=:date_quitance,etat=:etat,
                 photo=:photo,moyenne=:moyenne,bacc=:bacc,uuid_mention=:uuid_mention,
-                uuid_parcours=:uuid_parcours,uuid_semestre_petit=:uuid_semestre_petit,
-                uuid_semestre_grand=:uuid_semestre_grand 
+                uuid_parcours=:uuid_parcours,semestre_petit=:semestre_petit,
+                semestre_grand=:semestre_grand 
                 WHERE num_carte = :num_carte 
             """)
         select = text(f"""
@@ -43,19 +44,44 @@ class CRUDEtudiantAncien(CRUDBase[EtudiantAncien, EtudiantAncienCreate, Etudiant
            row = con.execute(select, {"num_carte":num_carte}).fetchone()
            return row
 
+    def get_by_mention(self, schema: str, uuid_mention: UUID) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE uuid_mention= :uuid_mention
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"uuid_mention":uuid_mention}).fetchall()
+           return row
+
+    def get_by_parcours(self, schema: str, uuid_parcours: UUID) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE uuid_parcours= :uuid_parcours
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"uuid_parcours":uuid_parcours}).fetchall()
+           return row
+
+    def get_by_semetre_and_mention(self, schema: str,uuid_mention:UUID, semestre_grand: str) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE uuid_mention= :uuid_mention 
+        AND semestre_grand= :semestre_grand
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"semestre_grand":semestre_grand , "uuid_mention":uuid_mention}).fetchall()
+           return row
+
     def create_etudiant(self,schema: str, obj_in: EtudiantAncienCreate) -> Optional[EtudiantAncien]:
         obj_in_data = jsonable_encoder(obj_in)
         insert = text(f"""
         INSERT INTO "{schema}"."ancien_etudiant" (
             "uuid", "num_carte", "nom", "prenom", "date_naiss", "lieu_naiss", "adresse", "sexe",
             "nation", "num_cin", "date_cin","lieu_cin", "montant", "num_quitance", "date_quitance",
-            "etat", "photo", "moyenne", "bacc", "uuid_mention", "uuid_parcours", "uuid_semestre_petit",
-            "uuid_semestre_grand")
+            "etat", "photo", "moyenne", "bacc", "uuid_mention", "uuid_parcours", "semestre_petit",
+            "semestre_grand")
             VALUES
             (:uuid,:num_carte,:nom,:prenom,:date_naiss,:lieu_naiss,:adresse,:sexe,:nation,
                 :num_cin,:date_cin,:lieu_cin,:montant,:num_quitance,:date_quitance,:etat,
-                :photo,:moyenne,:bacc,:uuid_mention,:uuid_parcours,:uuid_semestre_petit,
-                :uuid_semestre_grand); """)
+                :photo,:moyenne,:bacc,:uuid_mention,:uuid_parcours,:semestre_petit,
+                :semestre_grand); """)
         select = text(f"""
         SELECT * FROM "{schema}"."ancien_etudiant" """)
         with engine.begin() as con:

@@ -12,7 +12,8 @@ class UserBase(BaseModel):
     is_active: Optional[bool] = True
     is_admin: Optional[bool]
     is_superuser: bool = False
-    name: Optional[str] = None
+    first_name: str
+    last_name:Optional[str]
     uuid_mention: Optional[str]
     uuid_role: Optional[str]
 
@@ -21,7 +22,8 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     email: EmailStr
     password: str
-    name: str
+    first_name: str
+    last_name:Optional[str]
 
 
 # Properties to receive via API on update

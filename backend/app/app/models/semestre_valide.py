@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class SemestreValide(Base):
-    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+    uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     num_carte = Column(String)
     semestre = Column(ARRAY(String))
     anne = Column(ARRAY(String))
