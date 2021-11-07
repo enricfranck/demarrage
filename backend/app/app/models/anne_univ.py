@@ -14,3 +14,4 @@ class AnneUniv(Base):
     uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String)
     code = Column(String)
+    moyenne = Column(float)

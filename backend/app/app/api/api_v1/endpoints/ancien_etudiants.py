@@ -1,7 +1,7 @@
 from os import SEEK_HOLE
 from typing import Any, List
 import uuid
-from sqlalchemy.dialects.postgresql.base import UUID
+from uuid import UUID
 
 from sqlalchemy.sql import schema
 
@@ -106,19 +106,19 @@ def read_etudiant_by_parcours(
     etudiant = crud.ancien_etudiant.get_by_parcours(schema=schema, uuid_parcours=uuid_parcours )
     return etudiant
 
-@router.get("/by_semetre_grand/{schema}", response_model=List[Any])
+@router.get("/by_semetre_and_mention/{schema}", response_model=List[Any])
 def read_etudiant_by_semstre_and_mention(
     *,
     schema: str,
     uuid_mention: UUID,
-    semetre_grand: str,
+    semestre_grand: str,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Get etudiant by parcours.
     """
     etudiant = crud.ancien_etudiant.get_by_semetre_and_mention(
-        schema=schema, uuid_mention=uuid_mention,  semetre_grand=semetre_grand )
+        schema=schema, uuid_mention=uuid_mention, semestre_grand=semestre_grand )
     return etudiant
 
 

@@ -60,6 +60,22 @@ class CRUDEtudiantAncien(CRUDBase[EtudiantAncien, EtudiantAncienCreate, Etudiant
            row = con.execute(select, {"uuid_parcours":uuid_parcours}).fetchall()
            return row
 
+    def get_by_etat(self, schema: str, etat: str) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE etat= :etat
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"etat":etat}).fetchall()
+           return row
+
+    def get_by_etat_and_moyenne(self, schema: str, etat: str, moyenne: float) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE etat= :etat AND moyenne => : moyenne 
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"etat":etat,"moyenne":moyenne}).fetchall()
+           return row
+
     def get_by_semetre_and_mention(self, schema: str,uuid_mention:UUID, semestre_grand: str) -> Optional[EtudiantAncien]:
         select = text(f"""
         SELECT * FROM "{schema}"."ancien_etudiant" WHERE uuid_mention= :uuid_mention 

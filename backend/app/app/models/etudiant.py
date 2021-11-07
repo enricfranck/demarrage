@@ -28,7 +28,7 @@ def create(schemas):
             Column("date_quitance",String),
             Column("etat",String),
             Column("photo",String,unique=True),
-            Column("moyenne",String),
+            Column("moyenne",float),
             Column("bacc",String),
             Column("uuid_mention",UUID(as_uuid=True)),
             Column("uuid_parcours",UUID(as_uuid=True)),

@@ -7,16 +7,18 @@ from pydantic import BaseModel
 # Shared properties
 class AnneUnivBase(BaseModel):
     title: Optional[str] = None
+    moyenne: Optional[float]
 
 
 # Properties to receive via API on creation
 class AnneUnivCreate(AnneUnivBase):
     title: str
+    moyenne: float
 
 
 # Properties to receive via API on update
 class AnneUnivUpdate(AnneUnivBase):
-    title: Optional[str] = None
+    pass
 
 
 class AnneUnivInDBBase(AnneUnivBase):
