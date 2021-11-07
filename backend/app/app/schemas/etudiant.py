@@ -41,7 +41,7 @@ class EtudiantAncienCreate(EtudiantBase):
     date_cin: str
     lieu_cin: str
     montant: str
-    moyenne: str
+    moyenne: float
     bacc: str
     etat: str
     photo: str
@@ -86,7 +86,7 @@ class EtudiantNouveauCreate(EtudiantBase):
     uuid_parcours: UUID
 # Properties to receive via API on update
 class EtudiantAncienUpdate(EtudiantBase):
-    moyenne: Optional[str] = None
+    moyenne: Optional[float] = None
     num_carte: Optional[str]
     bacc:Optional[str]
     semestre_petit: Optional[str]
@@ -112,7 +112,7 @@ class EtudiantNouveauUpdate(EtudiantBase):
 class EtudiantAncienInDBBase(EtudiantBase):
     uuid: Optional[UUID]
     num_carte: Optional[str]
-    moyenne: Optional[str] = None
+    moyenne: Optional[float] = None
     uuid_semestre_petit: Optional[str]
     uuid_semestre_grand: Optional[str]
 
@@ -122,7 +122,6 @@ class EtudiantAncienInDBBase(EtudiantBase):
 class EtudiantNouveauInDBBase(EtudiantBase):
     uuid: Optional[UUID]
     num_carte: Optional[str]
-    moyenne: Optional[str]
     bacc_num: Optional[str]
     bacc_centre: Optional[str]
     bacc_anne: Optional[str]

@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, Float
 from sqlalchemy.dialects.postgresql.base import UUID
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
 from sqlalchemy.sql.schema import ForeignKey, MetaData, Table
+from sqlalchemy.sql.sqltypes import Float
 from app.db.session import engine
 
 
@@ -28,7 +29,7 @@ def create(schemas):
             Column("date_quitance",String),
             Column("etat",String),
             Column("photo",String,unique=True),
-            Column("moyenne",String),
+            Column("moyenne",Float),
             Column("bacc",String),
             Column("uuid_mention",UUID(as_uuid=True)),
             Column("uuid_parcours",UUID(as_uuid=True)),

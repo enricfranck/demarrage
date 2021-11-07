@@ -36,7 +36,7 @@ def read_annee_universitaire(
 def create_annee_universitaire(
     *,
     db: Session = Depends(deps.get_db),
-    anne_univ_in: schemas.SemestreCreate,
+    anne_univ_in: schemas.AnneUnivCreate,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
@@ -71,7 +71,7 @@ def update_annee_universitaire(
     *,
     db: Session = Depends(deps.get_db),
     uuid: str,
-    anne_univ_in: schemas.SemestreUpdate,
+    anne_univ_in: schemas.AnneUnivUpdate,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """

@@ -69,6 +69,22 @@ class CRUDEtudiantAncien(CRUDBase[EtudiantAncien, EtudiantAncienCreate, Etudiant
            row = con.execute(select, {"semestre_grand":semestre_grand , "uuid_mention":uuid_mention}).fetchall()
            return row
 
+    def get_by_etat(self, schema: str,etat: str) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE etat= :etat 
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"etat":etat }).fetchall()
+           return row
+
+    def get_by_etat_and_moyenne(self, schema: str,etat: str, moyenne: float) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE etat= :etat AND moyenne >= :moyenne
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, {"etat":etat,"moyenne":moyenne }).fetchall()
+           return row
+
     def create_etudiant(self,schema: str, obj_in: EtudiantAncienCreate) -> Optional[EtudiantAncien]:
         obj_in_data = jsonable_encoder(obj_in)
         insert = text(f"""
