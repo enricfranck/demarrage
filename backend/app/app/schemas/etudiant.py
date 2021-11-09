@@ -23,8 +23,6 @@ class EtudiantBase(BaseModel):
     photo: Optional[str] = None
     num_quitance: Optional[str] = None
     date_quitance: Optional[str] = None
-    uuid_mention: Optional[UUID]
-    uuid_parcours: Optional[UUID]
 
 
 # Properties to receive via API on creation
@@ -89,6 +87,8 @@ class EtudiantAncienUpdate(EtudiantBase):
     moyenne: Optional[float] = None
     num_carte: Optional[str]
     bacc:Optional[str]
+    uuid_mention: Optional[UUID]
+    uuid_parcours: Optional[UUID]
     semestre_petit: Optional[str]
     semestre_grand: Optional[str]
 
@@ -107,14 +107,16 @@ class EtudiantNouveauUpdate(EtudiantBase):
     proffession_mere: Optional[str]
     adresse_parent: Optional[str]
     niveau: Optional[str]
+    uuid_mention: Optional[UUID]
+    uuid_parcours: Optional[UUID]
 
 
 class EtudiantAncienInDBBase(EtudiantBase):
     uuid: Optional[UUID]
     num_carte: Optional[str]
     moyenne: Optional[float] = None
-    uuid_semestre_petit: Optional[str]
-    uuid_semestre_grand: Optional[str]
+    semestre_petit: Optional[str]
+    semestre_grand: Optional[str]
 
     class Config:
         orm_mode = True
@@ -140,7 +142,7 @@ class EtudiantNouveauInDBBase(EtudiantBase):
 
 # Additional properties to return via API
 class EtudiantAncien(EtudiantAncienInDBBase):
-    pass
+    parcours:Optional[str]
 
 
 # Additional properties stored in DB

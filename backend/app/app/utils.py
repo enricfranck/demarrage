@@ -10,7 +10,8 @@ import secrets, random, string
 import smtplib, ssl
 from pydantic import EmailStr
 import requests
-
+import json
+from uuid import UUID
 from app.core.config import settings
 
 
@@ -144,3 +145,9 @@ def check_email_valide(email: EmailStr) -> str:
     params={"email":email})
     status = response.json()["status"]
     return status
+
+class UUIDEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            return obj.hex
+        return json.JSONEncoder.default(self, obj)

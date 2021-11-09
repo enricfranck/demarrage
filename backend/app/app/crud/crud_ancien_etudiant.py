@@ -34,7 +34,6 @@ class CRUDEtudiantAncien(CRUDBase[EtudiantAncien, EtudiantAncienCreate, Etudiant
         with engine.begin() as con2:
            row = con2.execute(select).fetchall()
         return row
-    
 
     def get_by_num_carte(self, schema: str, num_carte: str) -> Optional[EtudiantAncien]:
         select = text(f"""
@@ -58,6 +57,16 @@ class CRUDEtudiantAncien(CRUDBase[EtudiantAncien, EtudiantAncienCreate, Etudiant
         """)
         with engine.begin() as con:
            row = con.execute(select, {"uuid_parcours":uuid_parcours}).fetchall()
+           return row
+
+    def get_by_class(self, schema: str, uuid_parcours: UUID, uuid_mention: UUID, semestre: str) -> Optional[EtudiantAncien]:
+        select = text(f"""
+        SELECT * FROM "{schema}"."ancien_etudiant" WHERE uuid_parcours= :uuid_parcours 
+        AND uuid_mention =: uuid_mention AND (semetre_petit= :semetrse OR semestre_grand =: semestre)
+        """)
+        with engine.begin() as con:
+           row = con.execute(select, 
+           {"uuid_parcours":uuid_parcours,"uuid_mention":uuid_mention,"semestre":semestre}).fetchall()
            return row
 
     def get_by_semetre_and_mention(self, schema: str,uuid_mention:UUID, semestre_grand: str) -> Optional[EtudiantAncien]:
