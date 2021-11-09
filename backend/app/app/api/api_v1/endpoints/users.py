@@ -43,7 +43,7 @@ def create_user(
             status_code=400,
             detail="The user with this username already exists in the system.",
         )
-    #if check_email_valide(user_in.email) == "valid":
+    #if check_email_valide(user_in.email) == "valid": 
     #    send_new_account(user_in.email,user_in.password)
     #    user = crud.user.create(db, obj_in=user_in)
     #else:
