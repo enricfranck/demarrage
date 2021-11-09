@@ -118,6 +118,10 @@ def create_anne(anne:str):
     ann = "anne_"+anne[0:4]+"_"+anne[5:9]
     return ann
 
+def create_matier(anne:str):
+    matier = "matier"+anne[0:4]+"_"+anne[5:9]
+    return matier
+
 def send_new_account(email_to: str, password: str) -> str:
     smtp_server = settings.SMTP_SERVER
     smtp_port = settings.SMTP_PORT

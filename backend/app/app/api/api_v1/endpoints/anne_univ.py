@@ -9,7 +9,7 @@ from app import crud, models, schemas
 from app.api import deps
 from app.db.session import engine
 from sqlalchemy.sql.ddl import CreateSchema
-from app.utils import create_anne
+from app.utils import create_anne, create_matier
 from app.core.config import settings
 
 router = APIRouter()
@@ -48,10 +48,11 @@ def create_annee_universitaire(
         if not anne_univ:
             anne_univ = crud.anne_univ.create(db=db, obj_in=anne_univ_in)
             try:
-                schem = create_anne(anne_univ.title)
-                engine.execute(CreateSchema(schem))
-                models.etudiant.create(schem)
-                settings.SCHEMAS = schem
+                schem_et = create_anne(anne_univ.title)
+                matier_et = create_matier(anne_univ.title)
+                engine.execute(CreateSchema(schem_et))
+                engine.execute(CreateSchema(matier_et))
+                models.etudiant.create(schem_et)
                 models.create_table()
                 reponse = "Success"
             except sqlalchemy.exc.ProgrammingError:
