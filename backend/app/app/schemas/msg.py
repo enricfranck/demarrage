@@ -1,5 +1,8 @@
+# Shared properties
+from typing import Optional
 from pydantic import BaseModel
 
 
 class Msg(BaseModel):
-    msg: str
+    title: Optional[str] = None
+

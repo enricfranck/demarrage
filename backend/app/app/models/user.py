@@ -1,15 +1,11 @@
 from typing import TYPE_CHECKING
-
-from sqlalchemy import Boolean, Column, Integer, String
-from sqlalchemy.dialects.postgresql.base import UUID
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.dialects.postgresql.base import UUID
 import uuid
-from app.db.base_class import Base
 
-if TYPE_CHECKING:
-    from .role import Role  # noqa: F401
-    from .mention import Mention  # noqa: F401
+from sqlalchemy.sql.sqltypes import ARRAY
+from app.db.base_class import Base
 
 
 class User(Base):
@@ -21,8 +17,6 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
     is_admin = Column(Boolean(), default=False)
-    uuid_role = Column(UUID(as_uuid=True), ForeignKey("role.uuid"))
-    uuid_mention = Column(UUID(as_uuid=True), ForeignKey("mention.uuid"))
-    role = relationship("Role", back_populates="user")
-    mention = relationship("Mention", back_populates="user")
+    role_id = Column(ARRAY(UUID))
+    team_id = Column(UUID(as_uuid=True), ForeignKey('team.uuid'))
 

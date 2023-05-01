@@ -1,24 +1,32 @@
+import json
 import logging
+import secrets
+import smtplib
+import ssl
+import string
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+from uuid import UUID
 
 import emails
+import requests
 from emails.template import JinjaTemplate
 from jose import jwt
-import secrets, random, string
-import smtplib, ssl
 from pydantic import EmailStr
-import requests
+from sqlalchemy import MetaData, Table
+from unidecode import unidecode
 
+from app import schemas
 from app.core.config import settings
+from app.db.session import engine
 
 
 def send_email(
-    email_to: str,
-    subject_template: str = "",
-    html_template: str = "",
-    environment: Dict[str, Any] = {},
+        email_to: str,
+        subject_template: str = "",
+        html_template: str = "",
+        environment: Dict[str, Any] = {},
 ) -> None:
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
     message = emails.Message(
@@ -109,38 +117,79 @@ def verify_password_reset_token(token: str) -> Optional[str]:
     except jwt.JWTError:
         return None
 
+
 def create_secret():
-    res = "".join(secrets.choice(string.ascii_letters+string.digits) for x in range(10))
+    res = "".join(secrets.choice(string.ascii_letters + string.digits) for x in range(10))
     return res
 
-def create_anne(anne:str):
-    ann = "anne_"+anne[0:4]+"_"+anne[5:9]
-    return ann
 
-def send_new_account(email_to: str, password: str) -> str:
+
+def decode_text(text: str) -> str:
+    str_ = text.replace(" ", "_")
+    return unidecode(str_.replace("-", "_"))
+
+
+def send_new_account(email_to: str, password: str) -> any:
     smtp_server = settings.SMTP_SERVER
     smtp_port = settings.SMTP_PORT
     sender_email = settings.EMAILS_FROM_EMAIL
     sender_password = settings.PASSWORD_FROM_EMAIL
 
     message = f"""\
-        FROM: Faculté des Sciences
+        FROM: "
         To: {email_to}
-        Subject: Nouveau compte FacScience
+        Subject: "
         Nouveau compte:\n
         Username: {email_to}
         Password: {password}
         """
     context = ssl.create_default_context()
-    with smtplib.SMTP(smtp_server,smtp_port) as server:
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
         server.ehlo()
         server.starttls(context=context)
         server.ehlo()
-        server.login(sender_email,sender_password)
-        server.sendmail(sender_email,email_to,message)
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, email_to, message)
+
 
 def check_email_valide(email: EmailStr) -> str:
     response = requests.get("https://isitarealemail.com/api/email/validate",
-    params={"email":email})
+                            params={"email": email})
     status = response.json()["status"]
     return status
+
+def convert_date(date: str) -> str:
+    month = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
+            "Aout", "Séptembre", "Octobre", "Novembre","Décembre", ""]
+    # 1995-10-20
+    if not date :
+        return ""
+    try:
+        days = date[8:10]
+        year = date[0:4]
+        month_ = int(date[5:7])
+        return f"{days} {month[month_ - 1]} {year}"
+    except Exception as e:
+        print(e , date)
+        return  ""
+
+def clear_name(name: str, nbr: int = 50) -> str :
+    if len(name) <= nbr:
+        return name
+    else:
+        return name[0:nbr]+" ..."
+
+
+def format_date(date_: datetime = ""):
+    if date_ == "":
+        date_= datetime.now()
+    d2 = date_.astimezone()
+    return format(d2.strftime("%Y-%m-%d %H:%M:%S"))
+
+
+class UUIDEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            return obj.hex
+        return json.JSONEncoder.default(self, obj)
+

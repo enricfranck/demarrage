@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, List
 
 from sqlalchemy.orm import Session
 
@@ -15,6 +15,14 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_by_name(self, db: Session, *, name: str) -> Optional[User]:
         return db.query(User).filter(User.name == name).first()
 
+    def get_by_uuid(self, db: Session, *, uuid: str) -> Optional[User]:
+        return db.query(User).filter(User.uuid == uuid).first()
+
+    def get_count(
+            self, db: Session
+    ) -> List[User]:
+        return db.query(User).filter(not User.is_superuser).all()
+    
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
         db_obj = User(
             email=obj_in.email,
@@ -22,8 +30,8 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,
             is_admin=obj_in.is_admin,
-            uuid_mention=obj_in.uuid_mention,
-            uuid_role=obj_in.uuid_role,
+            role_id=obj_in.role_id,
+            team_id=obj_in.team_id,
             is_superuser=obj_in.is_superuser,
         )
         db.add(db_obj)
@@ -38,7 +46,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
-        if update_data["password"]:
+        if "password" in update_data:
             hashed_password = get_password_hash(update_data["password"])
             del update_data["password"]
             update_data["hashed_password"] = hashed_password

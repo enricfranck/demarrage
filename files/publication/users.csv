@@ -1,0 +1,4 @@
+email,is_active,is_superuser,id,first_name,last_name
+admin@test.com,true,true,1
+enricfranck@gmail.com,true,false,4,Franck,HENRI
+jobsfinder@gmail.com,false,false,5,Jobs,Finder

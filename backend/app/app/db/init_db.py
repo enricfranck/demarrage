@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from app.db.base import Base
+
 from app import crud, schemas
 from app.core.config import settings
 from app.db import base  # noqa: F401
+from app.db.base import Base
 from app.db.session import engine
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB

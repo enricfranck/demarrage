@@ -9,24 +9,24 @@ from app.api import deps
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.Role])
+@router.get("/", response_model=schemas.ResponseData)
 def read_roles(
     db: Session = Depends(deps.get_db),
-    skip: int = 0,
-    limit: int = 100,
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Retrieve roles.
     """
     if crud.user.is_superuser(current_user):
-        role = crud.role.get_multi(db, skip=skip, limit=limit)
+        role = crud.role.get_multi(db=db)
+        count = len(crud.role.get_count(db=db))
+        response = schemas.ResponseData(**{'count':count, 'data':role})
     else:
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    return role
+    return response
 
 
-@router.post("/", response_model=schemas.Role)
+@router.post("/", response_model=List[schemas.Role])
 def create_role(
     *,
     db: Session = Depends(deps.get_db),
@@ -40,10 +40,10 @@ def create_role(
         role = crud.role.create(db=db, obj_in=role_in)
     else:
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    return role
+    return crud.role.get_multi(db=db)
 
 
-@router.put("/{id}", response_model=schemas.Role)
+@router.put("/", response_model=List[schemas.Role])
 def update_role(
     *,
     db: Session = Depends(deps.get_db),
@@ -60,10 +60,10 @@ def update_role(
     if not crud.user.is_superuser(current_user):
         raise HTTPException(status_code=400, detail="Not enough permissions")
     role = crud.role.update(db=db, db_obj=role, obj_in=role_in)
-    return role
+    return crud.role.get_multi(db=db)
 
 
-@router.get("/{uuid}", response_model=schemas.Role)
+@router.get("/by_uuid/", response_model=schemas.Role)
 def read_role(
     *,
     db: Session = Depends(deps.get_db),
@@ -81,7 +81,7 @@ def read_role(
     return role
 
 
-@router.delete("/{uuid}", response_model=schemas.Role)
+@router.delete("/", response_model=List[schemas.Role])
 def delete_role(
     *,
     db: Session = Depends(deps.get_db),
@@ -97,4 +97,4 @@ def delete_role(
     if not crud.user.is_superuser(current_user):
         raise HTTPException(status_code=400, detail="Not enough permissions")
     role = crud.role.remove_uuid(db=db, uuid=uuid)
-    return role
+    return crud.role.get_multi(db=db)
