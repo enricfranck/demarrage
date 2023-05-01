@@ -829,3 +829,4 @@ For example, run:
 ```console
 $ cookiecutter --config-file ./cookiecutter-config-file.yml --output-dir ../project-copy https://github.com/tiangolo/full-stack-fastapi-postgresql
 ```
+
